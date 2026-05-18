@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# omarchx:summary=Cache background switcher thumbnails for the current theme
+
+theme_name=$(cat "$HOME/.config/omarchx/current/theme.name" 2>/dev/null)
+
+omarchx-menu-images \
+  --cache-only \
+  "$HOME/.config/omarchx/current/theme/backgrounds" \
+  "$HOME/.config/omarchx/backgrounds/$theme_name"

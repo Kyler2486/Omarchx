@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# omarchx:summary=Wrapper for swayosd-client that targets the currently focused monitor.
+# omarchx:args=<swayosd-client-args...>
+
+exec swayosd-client --monitor "$(omarchx-hyprland-monitor-focused)" "$@"

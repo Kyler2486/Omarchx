@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# omarchx:summary=Overwrite the user config for fastfetch with the Omarchx default.
+
+omarchx-refresh-config fastfetch/config.jsonc

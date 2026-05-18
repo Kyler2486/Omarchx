@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# omarchx:summary=Install a hook into ~/.config/omarchx/hooks/<type>.d/
+# omarchx:group=hook
+# omarchx:name=install
+# omarchx:args=<type> <file>
+# omarchx:examples=omarchx hook install post-update ~/my-hook
+
+set -e
+
+if (( $# != 2 )); then
+  echo "Usage: omarchx-hook-install <type> <file>"
+  exit 1
+fi
+
+HOOK_TYPE=$1
+HOOK_FILE=$2
+HOOK_DIR="$HOME/.config/omarchx/hooks/$HOOK_TYPE.d"
+HOOK_NAME=$(basename "$HOOK_FILE")
+HOOK_PATH="$HOOK_DIR/$HOOK_NAME"
+
+if [[ ! -f $HOOK_FILE ]]; then
+  echo "Hook file not found: $HOOK_FILE"
+  exit 1
+fi
+
+mkdir -p "$HOOK_DIR"
+cp "$HOOK_FILE" "$HOOK_PATH"
+chmod 755 "$HOOK_PATH"
+
+echo "Installed $HOOK_TYPE hook: $HOOK_PATH"

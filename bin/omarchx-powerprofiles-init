@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# omarchx:summary=Set the correct power profile on boot based on current AC/battery state.
+
+if omarchx-battery-present && ! omarchx-ac-present; then
+  omarchx-powerprofiles-set battery
+else
+  omarchx-powerprofiles-set ac
+fi

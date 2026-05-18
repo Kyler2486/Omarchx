@@ -1,11 +1,11 @@
 echo "Migrate to proper packages for localsend and asdcontrol"
 
-if omarchy-pkg-present localsend-bin; then
-  omarchy-pkg-drop localsend-bin
-  omarchy-pkg-add localsend
+if omarchx-pkg-present localsend-bin; then
+  omarchx-pkg-drop localsend-bin
+  omarchx-pkg-add localsend
 fi
 
-if omarchy-pkg-present asdcontrol-git; then
-  omarchy-pkg-drop asdcontrol-git
-  omarchy-pkg-add asdcontrol
+if omarchx-pkg-present asdcontrol-git; then
+  omarchx-pkg-drop asdcontrol-git
+  omarchx-pkg-add asdcontrol
 fi

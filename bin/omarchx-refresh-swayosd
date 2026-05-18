@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# omarchx:summary=Overwrite the user configs for swayosd (controls on-screen feedback for changing volume/songs etc) with the Omarchx defaults and restart the service.
+
+omarchx-refresh-config swayosd/config.toml
+omarchx-refresh-config swayosd/style.css
+omarchx-restart-swayosd

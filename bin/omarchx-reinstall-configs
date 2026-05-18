@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# omarchx:summary=Reset all Omarchx user configs to the defaults
+# omarchx:requires-sudo=true
+
+set -e
+
+# Overwrite all user configs with the Omarchx defaults.
+
+if (( EUID == 0 )); then
+  echo "Error: This script should not be run as root"
+  exit 1
+fi
+
+echo "Resetting all Omarchx configs"
+cp -R ~/.local/share/omarchx/config/* ~/.config/
+cp ~/.local/share/omarchx/default/bashrc ~/.bashrc
+echo '[[ -f ~/.bashrc ]] && . ~/.bashrc' | tee ~/.bash_profile >/dev/null
+
+$(bash $OMARCHX_PATH/install/config/theme.sh)
+
+omarchx-refresh-limine
+omarchx-refresh-plymouth
+omarchx-nvim-setup

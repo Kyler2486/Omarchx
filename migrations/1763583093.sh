@@ -1,6 +1,6 @@
 echo "Make ethereal available as new theme"
 
-if [[ ! -L ~/.config/omarchy/themes/ethereal ]]; then
-  rm -rf ~/.config/omarchy/themes/ethereal
-  ln -nfs ~/.local/share/omarchy/themes/ethereal ~/.config/omarchy/themes/
+if [[ ! -L ~/.config/omarchx/themes/ethereal ]]; then
+  rm -rf ~/.config/omarchx/themes/ethereal
+  ln -nfs ~/.local/share/omarchx/themes/ethereal ~/.config/omarchx/themes/
 fi

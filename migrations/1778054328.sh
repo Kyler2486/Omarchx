@@ -1,3 +1,3 @@
-echo "Use omarchy-system-lock and omarchy-system-wake in hypridle"
+echo "Use omarchx-system-lock and omarchx-system-wake in hypridle"
 
-omarchy-refresh-hypridle
+omarchx-refresh-hypridle

@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# omarchx:summary=Edit, set, or reset About branding
+# omarchx:group=branding
+# omarchx:name=about
+# omarchx:args=<image|text|reset>
+# omarchx:examples=omarchx branding about image | omarchx branding about text | omarchx branding about reset
+
+set -euo pipefail
+
+SOURCE_DIR="${XDG_PICTURES_DIR:-$HOME/Pictures}"
+
+case "${1:-}" in
+image)
+  image=$(omarchx-menu-file "Pick png/svg from $SOURCE_DIR" "${SOURCE_DIR}" "svg png")
+  if [[ -n $image ]] && omarchx-transcode-ascii "$image" ~/.config/omarchx/branding/about.txt --width 54 --height 26; then
+    omarchx-launch-about >/dev/null 2>&1
+  fi
+  ;;
+text)
+  omarchx-launch-editor ~/.config/omarchx/branding/about.txt >/dev/null 2>&1 && omarchx-launch-about >/dev/null 2>&1
+  ;;
+reset)
+  cp "$OMARCHX_PATH/icon.txt" ~/.config/omarchx/branding/about.txt && omarchx-launch-about >/dev/null 2>&1
+  ;;
+*)
+  echo "Usage: omarchx-branding-about <image|text|reset>" >&2
+  exit 1
+  ;;
+esac

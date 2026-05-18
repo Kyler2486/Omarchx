@@ -1,6 +1,6 @@
-echo "Allow updating of timezone by right-clicking on the clock (or running omarchy-cmd-tzupdate)"
+echo "Allow updating of timezone by right-clicking on the clock (or running omarchx-cmd-tzupdate)"
 
-if omarchy-cmd-missing tzupdate; then
-  bash "$OMARCHY_PATH/install/config/timezones.sh"
-  omarchy-refresh-waybar
+if omarchx-cmd-missing tzupdate; then
+  bash "$OMARCHX_PATH/install/config/timezones.sh"
+  omarchx-refresh-waybar
 fi

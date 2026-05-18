@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# omarchx:summary=Open Voxtype AI model setup
+
+set -e
+
+omarchx-launch-floating-terminal-with-presentation "voxtype setup model"
+omarchx-restart-waybar

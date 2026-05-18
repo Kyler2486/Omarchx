@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# omarchx:summary=Set or toggle shape of Hyprland window corners
+# omarchx:args=[toggle|sharp|round]
+# omarchx:examples=omarchx style corners hyprland toggle | omarchx style corners hyprland round | omarchx style corners hyprland sharp
+
+case "${1:-toggle}" in
+  round) set -- on ;;
+  sharp) set -- off ;;
+  toggle) ;;
+  *)
+    echo "Usage: omarchx-style-corners-hyprland [toggle|sharp|round]"
+    exit 1
+    ;;
+esac
+
+omarchx-hyprland-toggle rounded-corners "$1"

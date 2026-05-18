@@ -1,13 +1,13 @@
-_omarchy_complete() {
+_omarchx_complete() {
   COMPREPLY=()
   local cur="${COMP_WORDS[COMP_CWORD]}"
 
-  local omarchy_path bin_dir
-  omarchy_path=$(command -v omarchy 2>/dev/null) || return 0
-  bin_dir=$(dirname -- "$(readlink -f -- "$omarchy_path" 2>/dev/null || printf '%s' "$omarchy_path")")
+  local omarchx_path bin_dir
+  omarchx_path=$(command -v omarchx 2>/dev/null) || return 0
+  bin_dir=$(dirname -- "$(readlink -f -- "$omarchx_path" 2>/dev/null || printf '%s' "$omarchx_path")")
   [[ -d $bin_dir ]] || return 0
 
-  local prefix="omarchy"
+  local prefix="omarchx"
   local i part
   for ((i = 1; i < COMP_CWORD; i++)); do
     part="${COMP_WORDS[i]}"
@@ -42,7 +42,7 @@ _omarchy_complete() {
 
   if (( ${#candidates[@]} == 0 )) && [[ -x $bin_dir/$prefix ]]; then
     local args enum
-    args=$(grep -m 1 '^# omarchy:args=<' "$bin_dir/$prefix" 2>/dev/null)
+    args=$(grep -m 1 '^# omarchx:args=<' "$bin_dir/$prefix" 2>/dev/null)
     enum="${args#*<}"
     enum="${enum%%>*}"
 
@@ -57,8 +57,8 @@ _omarchy_complete() {
   fi
 }
 
-complete -o default -F _omarchy_complete omarchy
+complete -o default -F _omarchx_complete omarchx
 
-# Hide individual omarchy-* binaries from initial-word command completion;
-# the unified `omarchy` dispatcher is the user-facing entry point.
-complete -I -A command -X 'omarchy-*'
+# Hide individual omarchx-* binaries from initial-word command completion;
+# the unified `omarchx` dispatcher is the user-facing entry point.
+complete -I -A command -X 'omarchx-*'

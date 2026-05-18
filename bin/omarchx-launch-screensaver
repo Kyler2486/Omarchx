@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# omarchx:summary=Launch the Omarchx screensaver in the default terminal on the system with the correct font configuration.
+
+if ! command -v tte &>/dev/null; then
+  exit 1
+fi
+
+# Exit early if screensave is already running
+pgrep -f org.omarchx.screensaver && exit 0
+
+# Allow screensaver to be turned off but also force started
+if omarchx-toggle-enabled screensaver-off && [[ $1 != "force" ]]; then
+  exit 1
+fi
+
+# Silently quit Walker on overlay
+walker -q
+
+focused=$(omarchx-hyprland-monitor-focused)
+terminal=$(xdg-terminal-exec --print-id)
+
+hypr_focus_monitor() {
+  hyprctl dispatch "hl.dsp.focus({ monitor = \"$1\" })" >/dev/null 2>&1 || hyprctl dispatch focusmonitor "$1" >/dev/null
+}
+
+hypr_exec() {
+  local command="$1"
+
+  hyprctl dispatch "hl.dsp.exec_cmd([[$command]])" >/dev/null 2>&1 || hyprctl dispatch exec -- bash -lc "$command" >/dev/null
+}
+
+for m in $(hyprctl monitors -j | jq -r '.[] | .name'); do
+  hypr_focus_monitor "$m"
+
+  case $terminal in
+  *Alacritty*)
+    hypr_exec "alacritty --class=org.omarchx.screensaver --config-file ~/.local/share/omarchx/default/alacritty/screensaver.toml -e omarchx-screensaver"
+    ;;
+  *ghostty*)
+    hypr_exec "ghostty --class=org.omarchx.screensaver --config-file=~/.local/share/omarchx/default/ghostty/screensaver --font-size=18 -e omarchx-screensaver"
+    ;;
+  *foot*)
+    hypr_exec "foot --app-id=org.omarchx.screensaver --config=\"$OMARCHX_PATH/default/foot/screensaver.ini\" -e omarchx-screensaver"
+    ;;
+  *kitty*)
+    hypr_exec "kitty --class=org.omarchx.screensaver --override font_size=18 --override window_padding_width=0 -e omarchx-screensaver"
+    ;;
+  *)
+    notify-send -u low "✋  Screensaver only runs in Alacritty, Foot, Ghostty, or Kitty"
+    ;;
+  esac
+done
+
+hypr_focus_monitor "$focused"

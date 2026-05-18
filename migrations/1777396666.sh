@@ -1,8 +1,8 @@
-echo "Use Omarchy UWSM session without graphical.target startup wait"
+echo "Use Omarchx UWSM session without graphical.target startup wait"
 
 sudo mkdir -p /usr/local/share/wayland-sessions
-sudo cp "$OMARCHY_PATH/default/wayland-sessions/omarchy.desktop" /usr/local/share/wayland-sessions/omarchy.desktop
+sudo cp "$OMARCHX_PATH/default/wayland-sessions/omarchx.desktop" /usr/local/share/wayland-sessions/omarchx.desktop
 
 if [[ -f /etc/sddm.conf.d/autologin.conf ]]; then
-  sudo sed -i 's/^Session=hyprland-uwsm$/Session=omarchy/' /etc/sddm.conf.d/autologin.conf
+  sudo sed -i 's/^Session=hyprland-uwsm$/Session=omarchx/' /etc/sddm.conf.d/autologin.conf
 fi

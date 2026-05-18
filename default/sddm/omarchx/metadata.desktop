@@ -1,0 +1,6 @@
+[SddmGreeterTheme]
+Name=Omarchx
+Description=Minimal terminal-style login theme matching the Limine bootloader aesthetic
+Author=Omarchx
+Type=sddm-theme
+Version=1.0

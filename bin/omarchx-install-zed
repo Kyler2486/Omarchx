@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# omarchx:summary=Install Zed Editor and configure it with the current Omarchx theme
+
+echo "Installing Zed Editor..."
+omarchx-pkg-add zed omazed
+
+# Apply Omarchx theme to Zed
+omazed setup
+
+setsid gtk-launch dev.zed.Zed

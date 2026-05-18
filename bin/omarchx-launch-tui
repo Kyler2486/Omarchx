@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# omarchx:summary=Launch a TUI command in the default terminal with Omarchx styling
+# omarchx:args=<command> [args...]
+
+exec setsid uwsm-app -- xdg-terminal-exec --app-id=org.omarchx.$(basename $1) -e "$1" "${@:2}"

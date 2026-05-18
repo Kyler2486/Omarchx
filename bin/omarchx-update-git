@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# omarchx:summary=Pull the latest Omarchx git changes
+
+set -e
+
+echo -e "\e[32mUpdate Omarchx\e[0m"
+
+omarchx-update-time
+
+# Suppress Hyprland config errors while git updates default config files mid-pull
+hyprctl keyword debug:suppress_errors true &>/dev/null || true
+hyprctl eval 'hl.config({ debug = { suppress_errors = true } })' &>/dev/null || true
+
+git -C $OMARCHX_PATH pull --autostash
+git -C $OMARCHX_PATH --no-pager diff --check || git -C $OMARCHX_PATH reset --merge
+
+hyprctl reload &>/dev/null || true

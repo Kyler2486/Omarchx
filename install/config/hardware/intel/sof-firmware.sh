@@ -3,6 +3,6 @@
 # Mainline `linux` only optdeps it, so without this the DSP fails to boot
 # and only auto_null shows up in PipeWire.
 
-if omarchy-hw-intel-ptl && ! omarchy-hw-match "XPS"; then
-  omarchy-pkg-add sof-firmware
+if omarchx-hw-intel-ptl && ! omarchx-hw-match "XPS"; then
+  omarchx-pkg-add sof-firmware
 fi

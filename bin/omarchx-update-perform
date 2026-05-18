@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# omarchx:summary=Run the full Omarchx update pipeline
+# omarchx:requires-sudo=true
+
+set -e
+
+# Ensure screensaver/sleep doesn't set in during updates
+hyprctl dispatch 'hl.dsp.window.tag({ tag = "+noidle" })' &>/dev/null || hyprctl dispatch tagwindow +noidle &>/dev/null || true
+
+# Perform all update steps
+omarchx-update-keyring
+omarchx-update-available-reset
+omarchx-update-system-pkgs
+omarchx-migrate
+omarchx-update-aur-pkgs
+omarchx-update-orphan-pkgs
+omarchx-hook post-update
+
+omarchx-update-analyze-logs
+
+omarchx-update-restart
+
+# Re-enable screensaver/sleep after updates
+hyprctl dispatch 'hl.dsp.window.tag({ tag = "-noidle" })' &>/dev/null || hyprctl dispatch tagwindow -- -noidle &>/dev/null || true

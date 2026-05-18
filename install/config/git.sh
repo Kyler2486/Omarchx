@@ -1,8 +1,8 @@
 # Set identification from install inputs
-if [[ -n ${OMARCHY_USER_NAME//[[:space:]]/} ]]; then
-  git config --global user.name "$OMARCHY_USER_NAME"
+if [[ -n ${OMARCHX_USER_NAME//[[:space:]]/} ]]; then
+  git config --global user.name "$OMARCHX_USER_NAME"
 fi
 
-if [[ -n ${OMARCHY_USER_EMAIL//[[:space:]]/} ]]; then
-  git config --global user.email "$OMARCHY_USER_EMAIL"
+if [[ -n ${OMARCHX_USER_EMAIL//[[:space:]]/} ]]; then
+  git config --global user.email "$OMARCHX_USER_EMAIL"
 fi

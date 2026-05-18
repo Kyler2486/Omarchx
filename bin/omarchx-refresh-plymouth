@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# omarchx:summary=Overwrite the user config for the Plymouth drive decryption and boot sequence with the Omarchx default and rebuild it.
+# omarchx:requires-sudo=true
+
+sudo cp -r ~/.local/share/omarchx/default/plymouth/* /usr/share/plymouth/themes/omarchx/
+sudo plymouth-set-default-theme omarchx
+
+if command -v limine-mkinitcpio &>/dev/null; then
+  sudo limine-mkinitcpio
+else
+  sudo mkinitcpio -P
+fi

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# omarchx:summary=Reinstall the stable Omarchx source directory from git
+
+set -e
+
+# Reinstall the Omarchx configuration directory from the git source.
+
+git clone --depth=1 --branch master "https://github.com/basecamp/omarchx.git" ~/.local/share/omarchx-new >/dev/null
+mv $OMARCHX_PATH ~/.local/share/omarchx-old
+mv ~/.local/share/omarchx-new $OMARCHX_PATH

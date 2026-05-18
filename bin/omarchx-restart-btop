@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# omarchx:summary=Reload btop configuration (used by the Omarchx theme switching).
+
+pkill -SIGUSR2 btop

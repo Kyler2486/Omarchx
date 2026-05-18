@@ -21,6 +21,6 @@ if [[ -f $tmux_config ]]; then
   fi
 
   if (( changed )); then
-    omarchy-restart-tmux
+    omarchx-restart-tmux
   fi
 fi

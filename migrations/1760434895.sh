@@ -1,6 +1,6 @@
-echo "Change to omarchy-nvim package"
-omarchy-pkg-drop omarchy-lazyvim
-omarchy-pkg-add omarchy-nvim
+echo "Change to omarchx-nvim package"
+omarchx-pkg-drop omarchx-lazyvim
+omarchx-pkg-add omarchx-nvim
 
 # Will trigger to overwrite configs or not to pickup new hot-reload themes
-omarchy-nvim-setup
+omarchx-nvim-setup

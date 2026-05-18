@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# omarchx:summary=Launch a floating terminal with the Omarchx presentation wrapper
+# omarchx:args=<command>
+
+cmd="$*"
+exec setsid uwsm-app -- xdg-terminal-exec --app-id=org.omarchx.terminal --title=Omarchx -e bash -c "omarchx-show-logo; $cmd; if (( \$? != 130 )); then omarchx-show-done; fi"

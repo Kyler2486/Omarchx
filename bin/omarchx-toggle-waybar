@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# omarchx:summary=Toggle Waybar visibility
+# omarchx:examples=omarchx toggle waybar
+
+omarchx-toggle waybar-off
+
+if pgrep -x waybar >/dev/null; then
+  pkill -x waybar
+else
+  uwsm-app -- waybar >/dev/null 2>&1 &
+fi

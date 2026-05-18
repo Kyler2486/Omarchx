@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# omarchx:summary=Overwrite all the user Hyprland Lua configs in ~/.config/hypr with the Omarchx defaults.
+
+omarchx-refresh-config hypr/.luarc.json
+omarchx-refresh-config hypr/autostart.lua
+omarchx-refresh-config hypr/bindings.lua
+omarchx-refresh-config hypr/input.lua
+omarchx-refresh-config hypr/looknfeel.lua
+omarchx-refresh-config hypr/hyprland.lua
+omarchx-refresh-config hypr/monitors.lua
+bash "$OMARCHX_PATH/install/config/omarchx-toggles.sh"
+bash "$OMARCHX_PATH/install/config/detect-keyboard-layout.sh"

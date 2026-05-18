@@ -1,5 +1,5 @@
-echo "Update Waybar for new Omarchy menu"
+echo "Update Waybar for new Omarchx menu"
 
 if ! grep -q "" ~/.config/waybar/config.jsonc; then
-  omarchy-refresh-waybar
+  omarchx-refresh-waybar
 fi

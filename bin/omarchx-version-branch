@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# omarchx:summary=Print the current Omarchx git branch
+
+echo $(git -C "$OMARCHX_PATH" rev-parse --abbrev-ref HEAD)

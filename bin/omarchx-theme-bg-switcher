@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# omarchx:summary=Open the Omarchx background switcher
+# omarchx:group=theme
+# omarchx:name=bg-switcher
+# omarchx:aliases=omarchx background
+
+OMARCHX_PATH=${OMARCHX_PATH:-$HOME/.local/share/omarchx}
+theme_name=$(cat "$HOME/.config/omarchx/current/theme.name" 2>/dev/null)
+current_background=$(readlink -f "$HOME/.config/omarchx/current/background" 2>/dev/null)
+
+omarchx-menu-images \
+  --selected "$current_background" \
+  "$HOME/.config/omarchx/current/theme/backgrounds" \
+  "$HOME/.config/omarchx/backgrounds/$theme_name"

@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# omarchx:summary=Finish the installation of Omarchx with items that can only be done after logging in.
+# omarchx:requires-sudo=true
+
+set -e
+
+FIRST_RUN_MODE=~/.local/state/omarchx/first-run.mode
+
+if [[ -f $FIRST_RUN_MODE ]]; then
+  rm -f "$FIRST_RUN_MODE"
+
+  bash "$OMARCHX_PATH/install/first-run/battery-monitor.sh"
+  bash "$OMARCHX_PATH/install/first-run/recover-internal-monitor.sh"
+  bash "$OMARCHX_PATH/install/first-run/cleanup-reboot-sudoers.sh"
+  bash "$OMARCHX_PATH/install/first-run/firewall.sh"
+  bash "$OMARCHX_PATH/install/first-run/dns-resolver.sh"
+  bash "$OMARCHX_PATH/install/first-run/gnome-theme.sh"
+  bash "$OMARCHX_PATH/install/first-run/gdk-scale.sh"
+  bash "$OMARCHX_PATH/install/first-run/swayosd.sh"
+  bash "$OMARCHX_PATH/install/first-run/gtk-primary-paste.sh"
+  bash "$OMARCHX_PATH/install/first-run/elephant.sh"
+  omarchx-hook-install post-update "$OMARCHX_PATH/install/first-run/install-voxtype.hook"
+  sudo rm -f /etc/sudoers.d/first-run
+
+  bash "$OMARCHX_PATH/install/first-run/welcome.sh"
+  bash "$OMARCHX_PATH/install/first-run/wifi.sh"
+fi

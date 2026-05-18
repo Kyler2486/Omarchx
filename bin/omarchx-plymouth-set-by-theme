@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# omarchx:summary=Set the Plymouth boot theme from an Omarchx theme
+# omarchx:args=<theme-name>
+# omarchx:requires-sudo=true
+
+# Resolve a theme by name and apply its unlock.png + colors.toml as the
+# Plymouth boot screen via omarchx-plymouth-set.
+
+if [[ $# -ne 1 ]]; then
+  echo "Usage: omarchx-plymouth-set-by-theme <theme-name>" >&2
+  exit 1
+fi
+
+theme=$1
+
+if [[ -d ~/.config/omarchx/themes/$theme ]]; then
+  theme_dir=~/.config/omarchx/themes/$theme
+else
+  theme_dir="$OMARCHX_PATH/themes/$theme"
+fi
+
+bg=$(awk -F'"' '/^background/{print $2}' "$theme_dir/colors.toml")
+text=$(awk -F'"' '/^foreground/{print $2}' "$theme_dir/colors.toml")
+
+exec omarchx-plymouth-set "$bg" "$text" "$theme_dir/unlock.png"

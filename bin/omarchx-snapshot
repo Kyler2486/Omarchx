@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# omarchx:summary=Create or restore system snapshots with snapper
+# omarchx:args=<create|restore>
+# omarchx:requires-sudo=true
+
+set -e
+
+COMMAND="$1"
+OMARCHX_PATH=${OMARCHX_PATH:-$HOME/.local/share/omarchx}
+
+if [[ -z $COMMAND ]]; then
+  echo "Usage: omarchx-snapshot <create|restore>" >&2
+  exit 1
+fi
+
+if ! command -v snapper &>/dev/null; then
+  exit 127 # omarchx-update can use this to just ignore if snapper is not available
+fi
+
+case "$COMMAND" in
+create)
+  DESC="$(omarchx-version)"
+
+  echo -e "\e[32mCreate system snapshot\e[0m"
+
+  # Get existing snapper config names from CSV output
+  mapfile -t CONFIGS < <(sudo snapper --csvout list-configs | awk -F, 'NR>1 {print $1}')
+
+  for config in "${CONFIGS[@]}"; do
+    sudo snapper -c "$config" create -c number -d "$DESC"
+    sudo snapper -c "$config" cleanup number
+  done
+  echo
+  ;;
+restore)
+  sudo limine-snapper-restore
+  ;;
+esac

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# omarchx:summary=Toggles the window gaps globally between no gaps and the default.
+
+omarchx-hyprland-toggle window-no-gaps

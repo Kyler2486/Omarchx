@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# omarchx:summary=Launch the Omarchx bluetooth controls TUI (provided by bluetui).
+
+rfkill unblock bluetooth
+exec omarchx-launch-or-focus-tui bluetui

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# omarchx:summary=Overwrite the user tmux config with the Omarchx default and reload tmux.
+
+omarchx-refresh-config tmux/tmux.conf
+omarchx-restart-tmux

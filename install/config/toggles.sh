@@ -1,5 +1,5 @@
 # Make sure toggles are available
-mkdir -p ~/.local/state/omarchy/toggles
-touch ~/.local/state/omarchy/toggles/hyprlock.conf
-touch ~/.local/state/omarchy/toggles/mako.ini
-touch ~/.local/state/omarchy/toggles/walker.css
+mkdir -p ~/.local/state/omarchx/toggles
+touch ~/.local/state/omarchx/toggles/hyprlock.conf
+touch ~/.local/state/omarchx/toggles/mako.ini
+touch ~/.local/state/omarchx/toggles/walker.css

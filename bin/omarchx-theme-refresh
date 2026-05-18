@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# omarchx:summary=Refresh the current theme from its templates.
+
+THEME_NAME_PATH="$HOME/.config/omarchx/current/theme.name"
+
+if [[ -f $THEME_NAME_PATH ]]; then
+  OMARCHX_THEME_SKIP_BACKGROUND=1 omarchx-theme-set "$(cat $THEME_NAME_PATH)"
+fi

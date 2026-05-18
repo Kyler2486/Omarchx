@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# omarchx:summary=Prompt for text input with Walker
+# omarchx:group=menu
+# omarchx:name=input
+# omarchx:args=prompt [walker args...]
+# omarchx:examples=omarchx menu input Reminder|omarchx-menu-input "Reminder in minutes" --width 400
+
+set -euo pipefail
+
+prompt="${1:-Input}"
+if (( $# > 0 )); then
+  shift
+fi
+
+omarchx-launch-walker --dmenu --inputonly --width 295 --minheight 1 --maxheight 1 -p "$prompt…" "$@" 2>/dev/null

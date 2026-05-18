@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# omarchx:summary=Reinstall Omarchx packages and reset default configs
+# omarchx:requires-sudo=true
+
+set -e
+
+# Attempt to reinstall all default Omarchx packages and reset all the default configs.
+
+echo -e "This will reinstall all the default Omarchx packages and reset all default configs.\nWarning: All user changes to configs will be lost.\n"
+
+if gum confirm "Are you sure you want to reinstall and lose all config changes?"; then
+  omarchx-reinstall-git
+  omarchx-reinstall-pkgs
+  omarchx-reinstall-configs
+
+  gum confirm "System has been reinstalled. Reboot?" && omarchx-system-reboot
+fi

@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# omarchx:summary=Edit, set, or reset screensaver branding
+# omarchx:group=branding
+# omarchx:name=screensaver
+# omarchx:args=<image|text|reset>
+# omarchx:examples=omarchx branding screensaver image | omarchx branding screensaver text | omarchx branding screensaver reset
+
+set -euo pipefail
+
+SOURCE_DIR="${XDG_PICTURES_DIR:-$HOME/Pictures}"
+
+case "${1:-}" in
+image)
+  image=$(omarchx-menu-file "Pick png/svg from $SOURCE_DIR" "${SOURCE_DIR}" "svg png")
+  if [[ -n $image ]] && omarchx-transcode-ascii "$image" ~/.config/omarchx/branding/screensaver.txt; then
+    omarchx-launch-screensaver force >/dev/null 2>&1
+  fi
+  ;;
+text)
+  omarchx-launch-editor ~/.config/omarchx/branding/screensaver.txt >/dev/null 2>&1 && omarchx-launch-screensaver force >/dev/null 2>&1
+  ;;
+reset)
+  cp "$OMARCHX_PATH/logo.txt" ~/.config/omarchx/branding/screensaver.txt && omarchx-launch-screensaver force >/dev/null 2>&1
+  ;;
+*)
+  echo "Usage: omarchx-branding-screensaver <image|text|reset>" >&2
+  exit 1
+  ;;
+esac

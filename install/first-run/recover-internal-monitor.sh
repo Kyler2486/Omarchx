@@ -1,1 +1,1 @@
-systemctl --user enable omarchy-recover-internal-monitor.service
+systemctl --user enable omarchx-recover-internal-monitor.service

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# omarchx:summary=Launch a terminal in the active terminal's current directory
+# omarchx:args=[command...]
+
+exec setsid uwsm-app -- xdg-terminal-exec --dir="$(omarchx-cmd-terminal-cwd)" "$@"

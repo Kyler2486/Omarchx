@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# omarchx:summary=Set Hyprland, Hyprlock, Mako, and Walker corners to sharp or round
+# omarchx:args=<sharp|round>
+# omarchx:examples=omarchx style corners round | omarchx style corners sharp
+
+if [[ $1 != "sharp" && $1 != "round" ]]; then
+  echo "Usage: omarchx-style-corners <sharp|round>"
+  exit 1
+fi
+
+omarchx-style-corners-hyprland "$1"
+omarchx-style-corners-hyprlock "$1"
+omarchx-style-corners-mako "$1"
+omarchx-style-corners-walker "$1"
+
+case $1 in
+  sharp) omarchx-notification-send "Sharp corners enabled" -g 󰝣 ;;
+  round) omarchx-notification-send "Round corners enabled" -g 󰘇 ;;
+esac

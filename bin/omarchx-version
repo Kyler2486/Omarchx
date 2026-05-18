@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# omarchx:summary=Print the installed Omarchx version
+
+cat $OMARCHX_PATH/version
