@@ -24,18 +24,18 @@ OMARCHX_REF="${OMARCHX_REF:-dev}"
 # Set mirror based on branch
 if [[ $OMARCHX_REF == "dev" ]]; then
   export OMARCHX_MIRROR=edge
-  echo 'Server = https://mirror.rackspace.com/archlinux/$repo/os/$arch' | sudo tee /etc/pacman.d/mirrorlist >/dev/null
+  echo 'Server = https://geo.mirror.pkgbuild.com/$repo/os/$arch' | tee /etc/pacman.d/mirrorlist >/dev/null
 elif [[ $OMARCHX_REF == "rc" ]]; then
   export OMARCHX_MIRROR=rc
-  echo 'Server = https://mirror.rackspace.com/archlinux/$repo/os/$arch' | sudo tee /etc/pacman.d/mirrorlist >/dev/null
+  echo 'Server = https://geo.mirror.pkgbuild.com/$repo/os/$arch' | tee /etc/pacman.d/mirrorlist >/dev/null
 else
   export OMARCHX_MIRROR=stable
-  echo 'Server = https://mirror.rackspace.com/archlinux/$repo/os/$arch' | sudo tee /etc/pacman.d/mirrorlist >/dev/null
+  echo 'Server = https://geo.mirror.pkgbuild.com/$repo/os/$arch' | tee /etc/pacman.d/mirrorlist >/dev/null
 fi
 
-sudo pacman -Syu --noconfirm --needed git
+pacman -Syu --noconfirm --needed git
 
-# Use custom repo if specified, otherwise default to basecamp/omarchx
+# Use custom repo if specified, otherwise default to Kyler2486/Omarchx
 OMARCHX_REPO="${OMARCHX_REPO:-Kyler2486/Omarchx}"
 
 echo -e "\nCloning Omarchx from: https://github.com/${OMARCHX_REPO}.git"
