@@ -24,13 +24,13 @@ OMARCHX_REF="${OMARCHX_REF:-dev}"
 # Set mirror based on branch
 if [[ $OMARCHX_REF == "dev" ]]; then
   export OMARCHX_MIRROR=edge
-  echo 'Server = https://mirror.omarchy.org/$repo/os/$arch' | sudo tee /etc/pacman.d/mirrorlist >/dev/null
+  echo 'Server = https://mirror.rackspace.com/archlinux/$repo/os/$arch' | sudo tee /etc/pacman.d/mirrorlist >/dev/null
 elif [[ $OMARCHX_REF == "rc" ]]; then
   export OMARCHX_MIRROR=rc
-  echo 'Server = https://rc-mirror.omarchy.org/$repo/os/$arch' | sudo tee /etc/pacman.d/mirrorlist >/dev/null
+  echo 'Server = https://mirror.rackspace.com/archlinux/$repo/os/$arch' | sudo tee /etc/pacman.d/mirrorlist >/dev/null
 else
   export OMARCHX_MIRROR=stable
-  echo 'Server = https://stable-mirror.omarchy.org/$repo/os/$arch' | sudo tee /etc/pacman.d/mirrorlist >/dev/null
+  echo 'Server = https://mirror.rackspace.com/archlinux/$repo/os/$arch' | sudo tee /etc/pacman.d/mirrorlist >/dev/null
 fi
 
 sudo pacman -Syu --noconfirm --needed git
@@ -43,7 +43,7 @@ rm -rf ~/.local/share/omarchx/
 git clone "https://github.com/${OMARCHX_REPO}.git" ~/.local/share/omarchx >/dev/null
 
 echo -e "\e[32mUsing branch: $OMARCHX_REF\e[0m"
-cd ~/.local/share/omarchX
+cd ~/.local/share/omarchx
 git fetch origin "${OMARCHX_REF}" && git checkout "${OMARCHX_REF}"
 cd -
 
