@@ -1,5 +1,0 @@
-#!/bin/bash
-
-# omarchx:summary=Restart the hyprsunset service (used for blue light filtering/night light).
-
-omarchx-restart-app hyprsunset

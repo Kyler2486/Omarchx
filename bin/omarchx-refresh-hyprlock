@@ -1,5 +1,0 @@
-#!/bin/bash
-
-# omarchx:summary=Overwrite the user config for hyprlock with the Omarchx default.
-
-omarchx-refresh-config hypr/hyprlock.conf
