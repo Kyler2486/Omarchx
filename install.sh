@@ -4,7 +4,7 @@
 set -eEo pipefail
 
 # Define Omarchx locations
-export OMARCHX_PATH="$HOME/.local/share/omarchx"
+export OMARCHX_PATH="$HOME/.local/share/Omarchx"
 export OMARCHX_INSTALL="$OMARCHX_PATH/install"
 export OMARCHX_INSTALL_LOG_FILE="/var/log/omarchx-install.log"
 export PATH="$OMARCHX_PATH/bin:$PATH"
