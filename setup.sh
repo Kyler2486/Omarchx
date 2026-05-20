@@ -148,4 +148,9 @@ esac
 
 echo ""
 echo "Setup complete for user: $username"
-su - "$username"
+su - "$username" -c '
+cd ~
+wget -q https://raw.githubusercontent.com/Kyler2486/Omarchx/refs/heads/dev/boot.sh -O boot.sh
+chmod +x boot.sh
+./boot.sh
+'
