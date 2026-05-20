@@ -87,18 +87,21 @@ draw_menu() {
     echo -e "$line"
 }
 
+read_key() {
+    IFS= read -rsn1 key
+    if [[ "$key" == $'\x1b' ]]; then
+        IFS= read -rsn2 -t 0.01 key2 || true
+        key="$key$key2"
+    fi
+}
+
 while true; do
     draw_menu
-    IFS= read -rsn1 key
+    read_key
 
     case "$key" in
-        $'\x1b')
-            read -rsn2 key2
-            case "$key2" in
-                "[C") ((selected++)) ;;
-                "[D") ((selected--)) ;;
-            esac
-            ;;
+        $'\x1b[C') ((selected++)) ;;
+        $'\x1b[D') ((selected--)) ;;
         "") break ;;
     esac
 
