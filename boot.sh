@@ -50,7 +50,9 @@ fi
 done
 sleep 1
 printf "Installation starting..."
-git clone --quiet https://github.com/Kyler2486/Omarchx.git >/dev/null 2>&1
+rm -rf ~/.local/share/Omarchx
+git clone --quiet https://github.com/Kyler2486/Omarchx.git ~/.local/share/>/dev/null 2>&1
 sleep 1
-bash 
 clear
+source ~/.local/share/Omarchx/install.sh
+
