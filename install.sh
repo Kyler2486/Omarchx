@@ -16,4 +16,4 @@ source "$OMARCHX_INSTALL/packaging/all.sh"
 source "$OMARCHX_INSTALL/config/all.sh"
 source "$OMARCHX_INSTALL/login/all.sh"
 source "$OMARCHX_INSTALL/post-install/all.sh"
-source "$OMARCHX_INSTALL/others/all.sh
+source "$OMARCHX_INSTALL/other/all.sh
