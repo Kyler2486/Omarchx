@@ -1,7 +1,7 @@
 if omarchx-battery-present; then
   cat <<EOF | sudo tee "/etc/udev/rules.d/99-power-profile.rules"
-SUBSYSTEM=="power_supply", ATTR{type}=="Mains", RUN+="/usr/bin/systemd-run --no-block --collect --unit=omarchx-power-profile --property=After=power-profiles-daemon.service $HOME/.local/share/omarchx/bin/omarchx-powerprofiles-set"
-SUBSYSTEM=="power_supply", ATTR{type}=="USB", RUN+="/usr/bin/systemd-run --no-block --collect --unit=omarchx-power-profile --property=After=power-profiles-daemon.service $HOME/.local/share/omarchx/bin/omarchx-powerprofiles-set"
+SUBSYSTEM=="power_supply", ATTR{type}=="Mains", RUN+="/usr/bin/systemd-run --no-block --collect --unit=omarchx-power-profile --property=After=power-profiles-daemon.service $HOME/.local/share/Omarchx/bin/omarchx-powerprofiles-set"
+SUBSYSTEM=="power_supply", ATTR{type}=="USB", RUN+="/usr/bin/systemd-run --no-block --collect --unit=omarchx-power-profile --property=After=power-profiles-daemon.service $HOME/.local/share/Omarchx/bin/omarchx-powerprofiles-set"
 EOF
 
   sudo systemctl enable power-profiles-daemon

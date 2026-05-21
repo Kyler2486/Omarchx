@@ -12,5 +12,5 @@ if [[ -f ~/.local/share/applications/blueberry.desktop ]]; then
 fi
 
 if [[ ! -L $HOME/.config/omarchx/themes/rose-pine ]]; then
-  ln -snf ~/.local/share/omarchx/themes/rose-pine ~/.config/omarchx/themes/
+  ln -snf ~/.local/share/Omarchx/themes/rose-pine ~/.config/omarchx/themes/
 fi

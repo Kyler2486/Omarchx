@@ -34,7 +34,7 @@ fi
 
 # Ensure basic config is present
 mkdir -p ~/.config/walker
-cp -r ~/.local/share/omarchx/config/walker/* ~/.config/walker/
+cp -r ~/.local/share/Omarchx/config/walker/* ~/.config/walker/
 
 if $NEEDS_MIGRATION; then
   kill -9 $(pgrep -x walker) 2>/dev/null || true

@@ -1,7 +1,7 @@
 echo "Migrate to new theme setup"
 
 # Move user-added backgrounds from Omarchx theme folders to user config
-OMARCHX_DIR="$HOME/.local/share/omarchx"
+OMARCHX_DIR="$HOME/.local/share/Omarchx"
 USER_BACKGROUNDS_DIR="$HOME/.config/omarchx/backgrounds"
 
 if [[ -d $OMARCHX_DIR/themes ]]; then

@@ -1,6 +1,6 @@
 # Configure pacman
-sudo cp -f ~/.local/share/omarchx/default/pacman/pacman-${OMARCHX_MIRROR:-stable}.conf /etc/pacman.conf
-sudo cp -f ~/.local/share/omarchx/default/pacman/mirrorlist-${OMARCHX_MIRROR:-stable} /etc/pacman.d/mirrorlist
+sudo cp -f ~/.local/share/Omarchx/default/pacman/pacman-${OMARCHX_MIRROR:-stable}.conf /etc/pacman.conf
+sudo cp -f ~/.local/share/Omarchx/default/pacman/mirrorlist-${OMARCHX_MIRROR:-stable} /etc/pacman.d/mirrorlist
 
 if lspci -nn | grep -q "106b:180[12]"; then
   cat <<EOF | sudo tee -a /etc/pacman.conf >/dev/null

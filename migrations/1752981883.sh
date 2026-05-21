@@ -7,5 +7,5 @@ if omarchx-cmd-missing walker; then
   rm -rf ~/.config/wofi
 
   mkdir -p ~/.config/walker
-  cp -r ~/.local/share/omarchx/config/walker/* ~/.config/walker/
+  cp -r ~/.local/share/Omarchx/config/walker/* ~/.config/walker/
 fi

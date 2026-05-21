@@ -1,11 +1,11 @@
 echo "Add UWSM env"
 
-export OMARCHX_PATH="$HOME/.local/share/omarchx"
+export OMARCHX_PATH="$HOME/.local/share/Omarchx"
 export PATH="$OMARCHX_PATH/bin:$PATH"
 
 mkdir -p "$HOME/.config/uwsm/"
 cat <<EOF | tee "$HOME/.config/uwsm/env"
-export OMARCHX_PATH=$HOME/.local/share/omarchx
+export OMARCHX_PATH=$HOME/.local/share/Omarchx
 export PATH=$OMARCHX_PATH/bin/:$PATH
 EOF
 

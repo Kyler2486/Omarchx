@@ -3,7 +3,7 @@ tee ~/.XCompose >/dev/null <<EOF
 # Run omarchx-restart-xcompose to apply changes
 
 # Include fast emoji access
-include "%H/.local/share/omarchx/default/xcompose"
+include "%H/.local/share/Omarchx/default/xcompose"
 
 # Identification
 <Multi_key> <space> <n> : "$OMARCHX_USER_NAME"
