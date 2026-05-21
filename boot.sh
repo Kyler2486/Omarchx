@@ -15,6 +15,7 @@ ansi_art='
 
 clear
 echo -e "\n$ansi_art\n\nLet's install Omarchx!\n"
+echo "Running as: $(whoami) HOME=$HOME"
 sleep 1
 
 printf "Installing/updating git.\n"
@@ -55,6 +56,7 @@ fi
 
 sleep 1
 printf "Installation starting...\n"
+sleep 1
 
 INSTALL_DIR="$HOME/.local/share/Omarchx"
 
@@ -68,4 +70,4 @@ if [ $? -ne 0 ]; then
 fi
 
 clear
-source "$INSTALL_DIR/install.sh"
+bash "$INSTALL_DIR/install.sh"
