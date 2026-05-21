@@ -1,21 +1,21 @@
 [Desktop Entry]
 Type=Application
-TryExec=foot
-Exec=foot
-Icon=foot
+TryExec=kitty
+Exec=kitty
+Icon=kitty
 Terminal=false
 Categories=System;TerminalEmulator;
-Name=Foot
+Name=Kitty
 GenericName=Terminal
-Comment=A fast, lightweight and minimalistic Wayland terminal emulator
+Comment=A fast, feature-rich, GPU based terminal emulator
 StartupNotify=true
-StartupWMClass=foot
+StartupWMClass=kitty
 Actions=New;
-X-TerminalArgExec=-e
-X-TerminalArgAppId=--app-id=
+X-TerminalArgExec=
+X-TerminalArgAppId=--class=
 X-TerminalArgTitle=--title=
-X-TerminalArgDir=--working-directory=
+X-TerminalArgDir=--directory=
 
 [Desktop Action New]
 Name=New Terminal
-Exec=foot
+Exec=kitty
