@@ -1,5 +1,4 @@
 run_logged $OMARCHX_INSTALL/packaging/base.sh
-run_logged $OMARCHX_INSTALL/packaging/fonts.sh
 run_logged $OMARCHX_INSTALL/packaging/nvim.sh
 run_logged $OMARCHX_INSTALL/packaging/icons.sh
 run_logged $OMARCHX_INSTALL/packaging/webapps.sh
