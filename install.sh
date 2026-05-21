@@ -17,17 +17,18 @@ echo -e "$ansi_art\n\nInstalling Omarchx..."
 # Exit immediately if a command exits with a non-zero status
 set -eEo pipefail
 
-# Define Omarchy locations
-export OMARCHY_PATH="$HOME/.local/share/omarchy"
-export OMARCHY_INSTALL="$OMARCHY_PATH/install"
-export OMARCHY_INSTALL_LOG_FILE="/var/log/omarchy-install.log"
-export PATH="$OMARCHY_PATH/bin:$PATH"
+# Define Omarchx locations
+export OMARCHX_PATH="$HOME/.local/share/Omarchx"
+export OMARCHX_INSTALL="$OMARCHX_PATH/install"
+export OMARCHX_INSTALL_LOG_FILE="/var/log/omarchx-install.log"
+export PATH="$OMARCHX_PATH/bin:$PATH"
 
 # Install
-source "$OMARCHY_INSTALL/helpers/all.sh"
-source "$OMARCHY_INSTALL/preflight/all.sh"
-source "$OMARCHY_INSTALL/packaging/all.sh"
-source "$OMARCHY_INSTALL/config/all.sh"
-source "$OMARCHY_INSTALL/login/all.sh"
-source "$OMARCHY_INSTALL/post-install/all.sh"
+source "$OMARCHX_INSTALL/helpers/all.sh"
+source "$OMARCHX_INSTALL/preflight/all.sh"
+source "$OMARCHX_INSTALL/packaging/all.sh"
+source "$OMARCHX_INSTALL/config/all.sh"
+source "$OMARCHX_INSTALL/login/all.sh"
+source "$OMARCHX_INSTALL/post-install/all.sh"
+source "$OMARCHX_INSTALL/others/all.sh"
 
