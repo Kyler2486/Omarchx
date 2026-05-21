@@ -23,7 +23,7 @@ sleep 1
 pkg="git"
 
 install_pkg() {
-  sudo pacman -Syu --noconfirm --needed "$pkg" >/dev/null 2>&1
+  sudo pacman -Syu --disable-sandbox --noconfirm --needed "$pkg" >/dev/null 2>&1
 }
 
 dots_spinner() {
