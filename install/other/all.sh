@@ -1,13 +1,10 @@
-#!/bin/bash
+# set -eEo pipefail  # comment this out temporarily
+set -x  # print every command as it runs
 
-set -e
-WORKDIR="/tmp/yay-build"
-
-rm -rf "$WORKDIR"
-git clone --quiet https://aur.archlinux.org/yay.git "$WORKDIR" >/dev/null 2>&1
-
-cd "$WORKDIR"
-
-# build + install
-makepkg -si --noconfirm --needed >/dev/null 2>&1
-sleep 10
+source "$OMARCHX_INSTALL/helpers/all.sh"
+source "$OMARCHX_INSTALL/preflight/all.sh"
+source "$OMARCHX_INSTALL/packaging/all.sh"
+source "$OMARCHX_INSTALL/config/all.sh"
+source "$OMARCHX_INSTALL/login/all.sh"
+source "$OMARCHX_INSTALL/post-install/all.sh"
+source "$OMARCHX_INSTALL/other/all.sh"
