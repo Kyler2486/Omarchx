@@ -1,19 +1,5 @@
 # Track if we're already handling an error to prevent double-trapping
 ERROR_HANDLING=false
-MENU_CHOICE=""
-
-# Colors - Tokyo Night
-RESET="\e[0m"
-RED="\e[38;2;247;118;142m"
-GREEN="\e[38;2;158;206;106m"
-YELLOW="\e[38;2;224;175;104m"
-BLUE="\e[38;2;122;162;247m"
-CYAN="\e[38;2;68;157;171m"
-FG="\e[38;2;169;177;214m"
-DIM="\e[38;2;120;124;153m"
-BG="\e[48;2;26;27;38m"
-BLUE_BG="\e[48;2;36;40;59m"
-BOLD="\e[1m"
 
 show_cursor() {
   printf "\033[?25h"
@@ -47,22 +33,22 @@ get_error_advice() {
   local category="$1"
   case "$category" in
     "network")
-      echo "  This looks like a network error. Check your internet connection and try again."
+      echo "This looks like a network error. Check your internet connection and try again."
       ;;
     "permission")
-      echo "  This looks like a permission error. Make sure you have the right sudo access."
+      echo "This looks like a permission error. Make sure you have the right sudo access."
       ;;
     "missing")
-      echo "  A required command or file is missing. It may not have been installed yet."
+      echo "A required command or file is missing. It may not have been installed yet."
       ;;
     "conflict")
-      echo "  A package conflict was detected. You may need to remove conflicting packages first."
+      echo "A package conflict was detected. You may need to remove conflicting packages first."
       ;;
     "package")
-      echo "  A package installation failed. Try running 'pacman -Syu --disable-sandbox' manually."
+      echo "A package installation failed. Try running 'pacman -Syu --disable-sandbox' manually."
       ;;
     *)
-      echo "  An unexpected error occurred. Check the full log for more details."
+      echo "An unexpected error occurred. Check the full log for more details."
       ;;
   esac
 }
@@ -70,15 +56,14 @@ get_error_advice() {
 show_log_tail() {
   if [[ -f $OMARCHX_INSTALL_LOG_FILE ]]; then
     local log_lines=25
-    echo -e "${DIM}"
     tail -n $log_lines "$OMARCHX_INSTALL_LOG_FILE" | while IFS= read -r line; do
       if (( ${#line} > 76 )); then
-        echo "  ${line:0:76}..."
+        gum style --foreground 8 "  ${line:0:76}..."
       else
-        echo "  $line"
+        gum style --foreground 8 "  $line"
       fi
     done
-    echo -e "${RESET}"
+    echo
   fi
 }
 
@@ -86,15 +71,15 @@ show_failed_script_or_command() {
   local cmd="$BASH_COMMAND"
 
   if [[ -n ${CURRENT_SCRIPT:-} ]]; then
-    echo -e "${RED}  ${BOLD}Failed script:${RESET}${RED} $CURRENT_SCRIPT${RESET}"
+    gum style --foreground 1 "  Failed script: $CURRENT_SCRIPT"
   fi
 
   if [[ -n "$cmd" ]]; then
-    echo -e "${RED}  ${BOLD}Failed command:${RESET}${RED} $cmd${RESET}"
+    gum style --foreground 1 "  Failed command: $cmd"
   fi
 
   if [[ -n ${BASH_LINENO[0]:-} ]]; then
-    echo -e "${DIM}  Line: ${BASH_LINENO[0]}${RESET}"
+    gum style --foreground 8 "  Line: ${BASH_LINENO[0]}"
   fi
 }
 
@@ -108,65 +93,9 @@ restore_outputs() {
   fi
 }
 
-draw_menu() {
-  local options=("$@")
-  local selected=0
-  MENU_CHOICE=""
-
-  if ! [[ -t 1 ]] || ! (echo "" > /dev/tty) 2>/dev/null; then
-    echo -e "${BLUE}  What would you like to do?${RESET}\n"
-    for i in "${!options[@]}"; do
-      echo -e "  $((i+1))) ${FG}${options[$i]}${RESET}"
-    done
-    echo -ne "\n  Choice: "
-    read -r choice_num < /dev/tty
-    if [[ -z "$choice_num" ]] || ! [[ "$choice_num" =~ ^[0-9]+$ ]]; then
-      choice_num=${#options[@]}
-    fi
-    MENU_CHOICE="${options[$((choice_num-1))]}"
-    return
-  fi
-
-  for opt in "${options[@]}"; do
-    echo "    $opt"
-  done
-
-  while true; do
-    local move_up=$(( ${#options[@]} + 1 ))
-    printf "\033[${move_up}A"
-
-    echo -e "${DIM}  Use ↑↓ to navigate, Enter to select${RESET}"
-    for i in "${!options[@]}"; do
-      if [[ $i -eq $selected ]]; then
-        echo -e "${BLUE_BG}${BLUE}  › ${options[$i]}  ${RESET}"
-      else
-        echo -e "    ${FG}${options[$i]}${RESET}"
-      fi
-    done
-
-    IFS= read -rsn1 key < /dev/tty
-    case "$key" in
-      $'\x1b')
-        read -rsn2 key2 < /dev/tty
-        case "$key2" in
-          "[A") (( selected-- )) ;;
-          "[B") (( selected++ )) ;;
-        esac
-        ;;
-      "")
-        MENU_CHOICE="${options[$selected]}"
-        return
-        ;;
-    esac
-
-    (( selected < 0 )) && selected=$(( ${#options[@]} - 1 ))
-    (( selected >= ${#options[@]} )) && selected=0
-  done
-}
-
 catch_errors() {
   if [[ $ERROR_HANDLING == "true" ]]; then
-    exit 1
+    return 0
   else
     ERROR_HANDLING=true
   fi
@@ -179,14 +108,14 @@ catch_errors() {
   stop_log_output
   restore_outputs
 
-  clear
+  clear_logo
   show_cursor
 
-  echo -e "\n${RED}${BOLD}  Omarchx installation stopped!${RESET}\n"
+  gum style --foreground 1 --padding "1 0 0 $PADDING_LEFT" "Omarchx installation stopped!"
 
   show_log_tail
 
-  echo -e "${YELLOW}${BOLD}  Exit code $exit_code${RESET}"
+  gum style --foreground 3 "  Exit code $exit_code:"
   show_failed_script_or_command
   echo
 
@@ -198,25 +127,27 @@ catch_errors() {
   local category
   category=$(categorize_error "$failed_cmd" "$exit_code" "$log_tail")
 
-  echo -e "${CYAN}  Error type: ${BOLD}$category${RESET}"
-  echo -e "${FG}$(get_error_advice "$category")${RESET}"
+  gum style --foreground 6 "  Error type: $category"
+  gum style --foreground 7 "  $(get_error_advice "$category")"
   echo
 
   if [[ "$category" == "network" ]]; then
-    echo -e "${YELLOW}  Network error detected — retrying in 5 seconds...${RESET}"
+    gum style --foreground 3 "  Network error detected — retrying in 5 seconds..."
     sleep 5
     if ping -c 1 -W 3 1.1.1.1 >/dev/null 2>&1; then
-      echo -e "${GREEN}  Connection restored. Retrying installation...${RESET}"
+      gum style --foreground 2 "  Connection restored. Retrying installation..."
       sleep 1
       ERROR_HANDLING=false
       bash ~/.local/share/Omarchx/install.sh
       return
     else
-      echo -e "${RED}  Still no connection. Please check your network.${RESET}\n"
+      gum style --foreground 1 "  Still no connection. Please check your network."
+      echo
     fi
   fi
 
-  echo -e "${DIM}  Get help at https://discord.gg/tXFUdasqhY${RESET}\n"
+  gum style --foreground 8 "  Get help from the community via QR code or at https://discord.gg/tXFUdasqhY"
+  echo
 
   while true; do
     local options=()
@@ -232,8 +163,7 @@ catch_errors() {
     options+=("View full log")
     options+=("Exit")
 
-    draw_menu "${options[@]}"
-    local choice="$MENU_CHOICE"
+    choice=$(gum choose "${options[@]}" --header "What would you like to do?" --height 6 --padding "1 $PADDING_LEFT")
 
     case "$choice" in
       "Retry installation")
