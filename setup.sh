@@ -19,6 +19,41 @@ sleep 2
 BLUE_BG="\e[104m"
 RESET="\e[0m"
 
+
+pkg="sudo"
+echo -e "Installing $pkg\n"
+
+install_pkg() {
+  pacman -S --disable-sandbox --noconfirm --needed "$pkg" >/dev/null 2>&1
+}
+
+dots_spinner() {
+  local pid=$1 delay=0.4 n=0 dots='...'
+  tput civis 2>/dev/null
+
+  while kill -0 "$pid" 2>/dev/null; do
+    n=$(( (n % 3) + 1 ))
+    printf "\r%.*s\033[K" "$n" "$dots"
+    sleep "$delay"
+  done
+
+  tput cnorm 2>/dev/null
+  printf "\r\033[K"
+}
+
+install_pkg & pid=$!
+dots_spinner "$pid"
+
+wait "$pid"
+status=$?
+
+if [ "$status" -eq 0 ]; then
+  printf "Installed %s\n" "$pkg"
+else
+  printf "Install failed (exit %d)\n" "$status"
+  exit 1
+fi
+
 echo "Setup user and password for Omarchx!"
 
 # Reset terminal to clean state before any reads
