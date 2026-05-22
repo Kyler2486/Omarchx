@@ -17,13 +17,12 @@ clear
 echo -e "\n$ansi_art\n\nLet's install Omarchx!\n"
 sleep 1
 
-printf "Installing/updating git.\n"
+printf "Updating system.\n"
 sleep 1
 
-pkg="git"
-
-install_pkg() {
-  sudo pacman -Syu --disable-sandbox --noconfirm --needed "$pkg" >/dev/null 2>&1
+update_sys() {
+  sudo pacman -Sy --disable-sandbox --noconfirm --needed >/dev/null 2>&1
+  sudo pacman -Syu --disable-sandbox --noconfirm --needed >/dev/null 2>&1
 }
 
 dots_spinner() {
@@ -40,16 +39,16 @@ dots_spinner() {
   printf "\r\033[K"
 }
 
-install_pkg & pid=$!
+update_sys & pid=$!
 dots_spinner "$pid"
 
 wait "$pid"
 status=$?
 
 if [ "$status" -eq 0 ]; then
-  printf "Installed %s\n" "$pkg"
+  printf "Updated system"
 else
-  printf "Install failed (exit %d)\n" "$status"
+  printf "Update failed(exit %d)\n" "$status"
   exit 1
 fi
 
