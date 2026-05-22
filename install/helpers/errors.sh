@@ -1,5 +1,6 @@
 # Track if we're already handling an error to prevent double-trapping
 ERROR_HANDLING=false
+MENU_CHOICE=""
 
 # Colors - Tokyo Night
 RESET="\e[0m"
@@ -22,7 +23,6 @@ hide_cursor() {
   printf "\033[?25l"
 }
 
-# Categorize error and give specific advice
 categorize_error() {
   local cmd="$1"
   local exit_code="$2"
@@ -93,7 +93,6 @@ show_failed_script_or_command() {
     echo -e "${RED}  ${BOLD}Failed command:${RESET}${RED} $cmd${RESET}"
   fi
 
-  # Show line number if available
   if [[ -n ${BASH_LINENO[0]:-} ]]; then
     echo -e "${DIM}  Line: ${BASH_LINENO[0]}${RESET}"
   fi
@@ -112,6 +111,7 @@ restore_outputs() {
 draw_menu() {
   local options=("$@")
   local selected=0
+  MENU_CHOICE=""
 
   if ! [[ -t 1 ]] || ! (echo "" > /dev/tty) 2>/dev/null; then
     echo -e "${BLUE}  What would you like to do?${RESET}\n"
@@ -119,15 +119,14 @@ draw_menu() {
       echo -e "  $((i+1))) ${FG}${options[$i]}${RESET}"
     done
     echo -ne "\n  Choice: "
-    read -r choice_num
+    read -r choice_num < /dev/tty
     if [[ -z "$choice_num" ]] || ! [[ "$choice_num" =~ ^[0-9]+$ ]]; then
       choice_num=${#options[@]}
     fi
-    echo "${options[$((choice_num-1))]}"
+    MENU_CHOICE="${options[$((choice_num-1))]}"
     return
   fi
 
-  # Draw initial options
   for opt in "${options[@]}"; do
     echo "    $opt"
   done
@@ -154,7 +153,10 @@ draw_menu() {
           "[B") (( selected++ )) ;;
         esac
         ;;
-      "") echo "${options[$selected]}"; return ;;
+      "")
+        MENU_CHOICE="${options[$selected]}"
+        return
+        ;;
     esac
 
     (( selected < 0 )) && selected=$(( ${#options[@]} - 1 ))
@@ -188,7 +190,6 @@ catch_errors() {
   show_failed_script_or_command
   echo
 
-  # Categorize and advise
   local log_tail=""
   if [[ -f $OMARCHX_INSTALL_LOG_FILE ]]; then
     log_tail=$(tail -n 20 "$OMARCHX_INSTALL_LOG_FILE")
@@ -201,7 +202,6 @@ catch_errors() {
   echo -e "${FG}$(get_error_advice "$category")${RESET}"
   echo
 
-  # Auto-retry on network errors
   if [[ "$category" == "network" ]]; then
     echo -e "${YELLOW}  Network error detected — retrying in 5 seconds...${RESET}"
     sleep 5
@@ -219,7 +219,7 @@ catch_errors() {
   echo -e "${DIM}  Get help at https://discord.gg/tXFUdasqhY${RESET}\n"
 
   while true; do
-    options=()
+    local options=()
 
     if [[ -n ${OMARCHX_ONLINE_INSTALL:-} ]]; then
       options+=("Retry installation")
@@ -232,9 +232,8 @@ catch_errors() {
     options+=("View full log")
     options+=("Exit")
 
-    echo -e "${BLUE}  What would you like to do?${RESET}\n"
-
-    choice=$(draw_menu "${options[@]}")
+    draw_menu "${options[@]}"
+    local choice="$MENU_CHOICE"
 
     case "$choice" in
       "Retry installation")
