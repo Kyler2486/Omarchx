@@ -1,152 +1,169 @@
-# Directs user to Omarchx Discord
-QR_CODE='
-█▀▀▀▀▀█ ▄ ▄ ▀▄▄▄█ █▀▀▀▀▀█
-█ ███ █ ▄▄▄▄▀▄▀▄▀ █ ███ █
-█ ▀▀▀ █ ▄█  ▄█▄▄▀ █ ▀▀▀ █
-▀▀▀▀▀▀▀ ▀▄█ █ █ █ ▀▀▀▀▀▀▀
-▀▀█▀▀▄▀▀▀▀▄█▀▀█  ▀ █ ▀ █
-█▄█ ▄▄▀▄▄ ▀ ▄ ▀█▄▄▄▄ ▀ ▀█
-▄ ▄▀█ ▀▄▀▀▀▄ ▄█▀▄█▀▄▀▄▀█▀
-█ ▄▄█▄▀▄█ ▄▄▄  ▀ ▄▀██▀ ▀█
-▀ ▀   ▀ █ ▀▄  ▀▀█▀▀▀█▄▀
-█▀▀▀▀▀█ ▀█  ▄▀▀ █ ▀ █▄▀██
-█ ███ █ █▀▄▄▀ █▀███▀█▄██▄
-█ ▀▀▀ █ ██  ▀ █▄█ ▄▄▄█▀ █
-▀▀▀▀▀▀▀ ▀ ▀ ▀▀▀  ▀ ▀▀▀▀▀▀'
-
 # Track if we're already handling an error to prevent double-trapping
 ERROR_HANDLING=false
 
-# Cursor is usually hidden while we install
+# Colors - Tokyo Night
+RESET="\e[0m"
+RED="\e[38;2;247;118;142m"
+GREEN="\e[38;2;158;206;106m"
+YELLOW="\e[38;2;224;175;104m"
+BLUE="\e[38;2;122;162;247m"
+CYAN="\e[38;2;68;157;171m"
+FG="\e[38;2;169;177;214m"
+DIM="\e[38;2;120;124;153m"
+BG="\e[48;2;26;27;38m"
+BLUE_BG="\e[48;2;36;40;59m"
+
 show_cursor() {
   printf "\033[?25h"
 }
 
-# Display truncated log lines from the install log
+hide_cursor() {
+  printf "\033[?25l"
+}
+
 show_log_tail() {
   if [[ -f $OMARCHX_INSTALL_LOG_FILE ]]; then
-    local log_lines=$((TERM_HEIGHT - LOGO_HEIGHT - 35))
-    local max_line_width=$((LOGO_WIDTH - 4))
-
+    local log_lines=15
+    echo -e "${DIM}"
     tail -n $log_lines "$OMARCHX_INSTALL_LOG_FILE" | while IFS= read -r line; do
-      if ((${#line} > max_line_width)); then
-        local truncated_line="${line:0:$max_line_width}..."
+      if (( ${#line} > 76 )); then
+        echo "  ${line:0:76}..."
       else
-        local truncated_line="$line"
+        echo "  $line"
       fi
-
-      gum style "$truncated_line"
     done
-
-    echo
+    echo -e "${RESET}"
   fi
 }
 
-# Display the failed command or script name
 show_failed_script_or_command() {
   if [[ -n ${CURRENT_SCRIPT:-} ]]; then
-    gum style "Failed script: $CURRENT_SCRIPT"
+    echo -e "${RED}  Failed script: ${CURRENT_SCRIPT}${RESET}"
   else
-    # Truncate long command lines to fit the display
     local cmd="$BASH_COMMAND"
-    local max_cmd_width=$((LOGO_WIDTH - 4))
-
-    if ((${#cmd} > max_cmd_width)); then
-      cmd="${cmd:0:$max_cmd_width}..."
+    if (( ${#cmd} > 76 )); then
+      cmd="${cmd:0:76}..."
     fi
-
-    gum style "$cmd"
+    echo -e "${RED}  ✗ ${cmd}${RESET}"
   fi
 }
 
-# Save original stdout and stderr for trap to use
 save_original_outputs() {
   exec 3>&1 4>&2
 }
 
-# Restore stdout and stderr to original (saved in FD 3 and 4)
-# This ensures output goes to screen, not log file
 restore_outputs() {
   if [[ -e /proc/self/fd/3 ]] && [[ -e /proc/self/fd/4 ]]; then
     exec 1>&3 2>&4
   fi
 }
 
-# Error handler
+draw_menu() {
+  local options=("$@")
+  local selected=0
+
+  while true; do
+    # Redraw menu
+    local move_up=$(( ${#options[@]} + 1 ))
+    printf "\033[${move_up}A" 2>/dev/null || true
+
+    echo -e "${DIM}  Use ↑↓ to navigate, Enter to select${RESET}"
+    for i in "${!options[@]}"; do
+      if [[ $i -eq $selected ]]; then
+        echo -e "${BLUE_BG}${BLUE}  › ${options[$i]}  ${RESET}"
+      else
+        echo -e "    ${FG}${options[$i]}${RESET}"
+      fi
+    done
+
+    IFS= read -rsn1 key < /dev/tty
+    case "$key" in
+      $'\x1b')
+        read -rsn2 key2 < /dev/tty
+        case "$key2" in
+          "[A") (( selected-- )) ;;  # up
+          "[B") (( selected++ )) ;;  # down
+        esac
+        ;;
+      "") echo "${options[$selected]}"; return ;;
+    esac
+
+    (( selected < 0 )) && selected=$(( ${#options[@]} - 1 ))
+    (( selected >= ${#options[@]} )) && selected=0
+  done
+}
+
 catch_errors() {
-  # Prevent recursive error handling
   if [[ $ERROR_HANDLING == "true" ]]; then
     return
   else
     ERROR_HANDLING=true
   fi
 
-  # Store exit code immediately before it gets overwritten
   local exit_code=$?
 
   stop_log_output
   restore_outputs
 
-  clear_logo
+  clear
   show_cursor
 
-  gum style --foreground 1 --padding "1 0 1 $PADDING_LEFT" "Omarchx installation stopped!"
+  echo -e "\n${RED}  Omarchx installation stopped!${RESET}\n"
   show_log_tail
 
-  gum style "This command halted with exit code $exit_code:"
+  echo -e "${YELLOW}  This command halted with exit code $exit_code:${RESET}"
   show_failed_script_or_command
-
-  gum style "$QR_CODE"
   echo
-  gum style "Get help from the community via QR code or at https://discord.gg/tXFUdasqhY"
 
-  # Offer options menu
+  echo -e "${DIM}  Get help at https://discord.gg/tXFUdasqhY${RESET}\n"
+
   while true; do
     options=()
 
-    # If online install, show retry first
     if [[ -n ${OMARCHX_ONLINE_INSTALL:-} ]]; then
       options+=("Retry installation")
     fi
 
-    # Add upload option if internet is available
     if ping -c 1 -W 1 1.1.1.1 >/dev/null 2>&1; then
       options+=("Upload log for support")
     fi
 
-    # Add remaining options
     options+=("View full log")
     options+=("Exit")
 
-    choice=$(gum choose "${options[@]}" --header "What would you like to do?" --height 6 --padding "1 $PADDING_LEFT")
+    echo -e "${BLUE}  What would you like to do?${RESET}\n"
+    for opt in "${options[@]}"; do
+      echo "    $opt"
+    done
+    echo
+
+    choice=$(draw_menu "${options[@]}")
 
     case "$choice" in
-    "Retry installation")
-      bash ~/.local/share/Omarchx/install.sh
-      break
-      ;;
-    "View full log")
-      if command -v less &>/dev/null; then
-        less "$OMARCHX_INSTALL_LOG_FILE"
-      else
-        tail "$OMARCHX_INSTALL_LOG_FILE"
-      fi
-      ;;
-    "Upload log for support")
-      omarchx-upload-log
-      ;;
-    "Exit" | "")
-      exit 1
-      ;;
+      "Retry installation")
+        bash ~/.local/share/Omarchx/install.sh
+        break
+        ;;
+      "View full log")
+        if command -v less &>/dev/null; then
+          less "$OMARCHX_INSTALL_LOG_FILE"
+        else
+          tail "$OMARCHX_INSTALL_LOG_FILE"
+        fi
+        ;;
+      "Upload log for support")
+        omarchx-upload-log
+        ;;
+      "Exit" | "")
+        exit 1
+        ;;
     esac
   done
 }
 
-# Exit handler - ensures cleanup happens on any exit
 exit_handler() {
   local exit_code=$?
 
-  # Only run if we're exiting with an error and haven't already handled it
   if (( exit_code != 0 )) && [[ $ERROR_HANDLING != "true" ]]; then
     catch_errors
   else
@@ -155,9 +172,7 @@ exit_handler() {
   fi
 }
 
-# Set up traps
 trap catch_errors ERR INT TERM
 trap exit_handler EXIT
 
-# Save original outputs in case we trap
 save_original_outputs
