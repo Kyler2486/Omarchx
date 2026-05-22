@@ -21,10 +21,13 @@ RESET="\e[0m"
 
 echo "Setup user and password for Omarchx!"
 
+# Reset terminal to clean state before any reads
+stty sane 2>/dev/null
+
 # Create user
 while true; do
-    read -p "Set your username: " username
-    username="$(echo "$username" | xargs)"
+    IFS= read -r -p "Set your username: " username < /dev/tty
+    username="$(echo "$username" | tr -d '[:cntrl:]' | xargs)"
 
     if [ -z "$username" ]; then
         echo "Username cannot be empty."
@@ -51,7 +54,7 @@ done
 
 # Setup password
 while true; do
-    read -s -p "Set your password: " pass1
+    IFS= read -rs -p "Set your password: " pass1 < /dev/tty
     echo
 
     if [ -z "$pass1" ]; then
@@ -59,7 +62,7 @@ while true; do
         continue
     fi
 
-    read -s -p "Confirm password: " pass2
+    IFS= read -rs -p "Confirm password: " pass2 < /dev/tty
     echo
 
     if [ "$pass1" != "$pass2" ]; then
@@ -71,6 +74,8 @@ while true; do
     echo "Password set successfully!"
     break
 done
+
+sleep 1.5
 
 # Sudo setup
 options=("No sudo" "Sudo user" "No passwd sudo")
@@ -140,6 +145,8 @@ case "$selected" in
         ;;
 esac
 
+sleep 1.5
+
 # Save username before git reads corrupt it
 _username="$username"
 
@@ -180,6 +187,8 @@ fi
 
 echo ""
 echo "Setup complete for user: $username"
+
+sleep 1.5
 
 # Pass env vars securely via temp file
 env_file=$(mktemp)
