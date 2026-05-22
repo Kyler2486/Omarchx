@@ -62,13 +62,16 @@ draw_menu() {
   local options=("$@")
   local selected=0
 
-  if ! (echo "" > /dev/tty) 2>/dev/null; then
+  if ! [[ -t 1 ]] || ! (echo "" > /dev/tty) 2>/dev/null; then
     echo -e "${BLUE}  What would you like to do?${RESET}\n"
     for i in "${!options[@]}"; do
       echo -e "  $((i+1))) ${FG}${options[$i]}${RESET}"
     done
     echo -ne "\n  Choice: "
     read -r choice_num
+    if [[ -z "$choice_num" ]] || ! [[ "$choice_num" =~ ^[0-9]+$ ]]; then
+      choice_num=${#options[@]}
+    fi
     echo "${options[$((choice_num-1))]}"
     return
   fi
