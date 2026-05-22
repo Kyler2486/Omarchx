@@ -8,7 +8,7 @@ ansi_art='
     ███   ███  ███   ███   ███ ▀███▀▀▀███ ▀███▀▀▀▀    ███      ▀▀███▀▀▀███   ▄██▀██▄
     ███   ███  ███   ███   ███  ███   ███ ██████████  ███   █▄   ███   ███  ███   ███
     ███   ███  ███   ███   ███  ███   ███  ███   ███  ███   ███  ███   ███  ███   ███
-     ▀█████▀    ▀█   ███   █▀   ███   █▀   ███   ███  ███████▀   ███   █▀   ▀█   █▀
+     ▀█████▀    ▀█   ███   █▀   ███   █▀   ███   █▀   ███████▀   ███   █▀   ▀█   █▀
                                            ███   █▀
 '
 clear
@@ -16,167 +16,108 @@ clear
 echo -e "$ansi_art"
 sleep 2
 
-BLUE_BG="\e[104m"
-RESET="\e[0m"
-
-
+# Install sudo
 pkg="sudo"
-echo -e "Installing $pkg\n"
+gum style --foreground 4 "Installing $pkg..."
 
 install_pkg() {
   pacman -S --disable-sandbox --noconfirm --needed "$pkg" >/dev/null 2>&1
 }
 
-dots_spinner() {
-  local pid=$1 delay=0.4 n=0 dots='...'
-  tput civis 2>/dev/null
-
-  while kill -0 "$pid" 2>/dev/null; do
-    n=$(( (n % 3) + 1 ))
-    printf "\r%.*s\033[K" "$n" "$dots"
-    sleep "$delay"
-  done
-
-  tput cnorm 2>/dev/null
-  printf "\r\033[K"
-}
-
-install_pkg & pid=$!
-dots_spinner "$pid"
-
-wait "$pid"
+install_pkg &
+pid=$!
+gum spin --spinner dot --title "Installing $pkg..." -- wait "$pid"
 status=$?
 
 if [ "$status" -eq 0 ]; then
-  printf "Installed %s\n" "$pkg"
+  gum style --foreground 2 "✓ Installed $pkg"
 else
-  printf "Install failed (exit %d)\n" "$status"
+  gum style --foreground 1 "✗ Install failed (exit $status)"
   exit 1
 fi
 
-echo "Setup user and password for Omarchx!"
-
-# Reset terminal to clean state before any reads
-stty sane 2>/dev/null
+echo ""
+gum style --foreground 4 --bold "Setup user and password for Omarchx!"
+echo ""
 
 # Create user
 while true; do
-    IFS= read -r -p "Set your username: " username < /dev/tty
+    username=$(gum input --placeholder "Username" --prompt "  Username › ")
     username="$(echo "$username" | tr -d '[:cntrl:]' | xargs)"
 
     if [ -z "$username" ]; then
-        echo "Username cannot be empty."
+        gum style --foreground 1 "Username cannot be empty."
         continue
     fi
 
     if ! [[ "$username" =~ ^[a-z_][a-z0-9_-]*$ ]]; then
-        echo "Invalid username format."
+        gum style --foreground 1 "Invalid username format."
         continue
     fi
 
     if id "$username" &>/dev/null; then
-        echo "User $username already exists."
+        gum style --foreground 1 "User $username already exists."
         continue
     fi
 
     if useradd -m "$username"; then
-        echo "User $username created successfully."
+        gum style --foreground 2 "✓ User $username created successfully."
         break
     else
-        echo "Failed to create user."
+        gum style --foreground 1 "Failed to create user."
     fi
 done
 
 # Setup password
 while true; do
-    IFS= read -rs -p "Set your password: " pass1 < /dev/tty
-    echo
+    pass1=$(gum input --password --placeholder "Password" --prompt "  Password › ")
 
     if [ -z "$pass1" ]; then
-        echo "Password cannot be empty."
+        gum style --foreground 1 "Password cannot be empty."
         continue
     fi
 
-    IFS= read -rs -p "Confirm password: " pass2 < /dev/tty
-    echo
+    pass2=$(gum input --password --placeholder "Confirm password" --prompt "  Confirm › ")
 
     if [ "$pass1" != "$pass2" ]; then
-        echo "Passwords do not match."
+        gum style --foreground 1 "Passwords do not match."
         continue
     fi
 
     echo "$username:$pass1" | chpasswd
-    echo "Password set successfully!"
+    gum style --foreground 2 "✓ Password set successfully!"
     break
 done
 
 sleep 1.5
 
 # Sudo setup
-options=("No sudo" "Sudo user" "No passwd sudo")
-selected=0
+echo ""
+gum style --foreground 4 "Sudo configuration"
+echo ""
 
-draw_menu() {
-    clear
-    echo "Sudo configuration"
-    echo ""
-    echo "Use   to navigate, 󰌑 to select"
-    echo ""
+sudo_choice=$(gum choose "No sudo" "Sudo user" "No passwd sudo" \
+  --header "Select sudo access level:" \
+  --height 6)
 
-    line=""
-    for i in "${!options[@]}"; do
-        if [ "$i" -eq "$selected" ]; then
-            line+="${BLUE_BG}  ${options[$i]}  ${RESET} "
-        else
-            line+="  ${options[$i]}  "
-        fi
-
-        [ "$i" -lt $((${#options[@]} - 1)) ] && line+="|"
-    done
-
-    echo -e "$line"
-}
-
-while true; do
-    draw_menu
-
-    IFS= read -rsn1 key < /dev/tty
-
-    case "$key" in
-        $'\x1b')
-            read -rsn2 key2 < /dev/tty
-            case "$key2" in
-                "[C") ((selected++)) ;;
-                "[D") ((selected--)) ;;
-            esac
-            ;;
-        "") break ;;
-    esac
-
-    ((selected < 0)) && selected=$((${#options[@]} - 1))
-    ((selected >= ${#options[@]})) && selected=0
-done
-
-# Apply sudo settings
 SUDOERS_DIR="/etc/sudoers.d"
 SUDOERS_FILE="$SUDOERS_DIR/$username"
-
 mkdir -p "$SUDOERS_DIR"
 
-case "$selected" in
-    0)
-        echo "No sudo granted."
+case "$sudo_choice" in
+    "No sudo")
         rm -f "$SUDOERS_FILE"
+        gum style --foreground 3 "No sudo granted."
         ;;
-    1)
+    "Sudo user")
         echo "$username ALL=(ALL:ALL) ALL" > "$SUDOERS_FILE"
         chmod 440 "$SUDOERS_FILE"
-        echo "Sudo granted."
+        gum style --foreground 2 "✓ Sudo granted."
         ;;
-    2)
+    "No passwd sudo")
         echo "$username ALL=(ALL) NOPASSWD: ALL" > "$SUDOERS_FILE"
         chmod 440 "$SUDOERS_FILE"
-        echo "NOPASSWD sudo granted."
+        gum style --foreground 2 "✓ NOPASSWD sudo granted."
         ;;
 esac
 
@@ -187,27 +128,25 @@ _username="$username"
 
 # Git configuration
 clear
-echo "Git configuration"
+echo -e "$ansi_art"
 echo ""
-echo "Used for git config (Enter to skip)"
+gum style --foreground 4 "Git configuration"
+gum style --foreground 8 "Used for git config (Enter to skip)"
 echo ""
-echo -ne "${BLUE_BG}  Username › ${RESET} "
-IFS= read -r git_username < /dev/tty
+
+git_username=$(gum input --placeholder "GitHub username (Enter to skip)" --prompt "  Username › ")
 export OMARCHX_USER_NAME="$git_username"
 
-echo -ne "${BLUE_BG}  Email › ${RESET} "
-IFS= read -r git_email < /dev/tty
+git_email=$(gum input --placeholder "GitHub email (Enter to skip)" --prompt "  Email › ")
 export OMARCHX_USER_EMAIL="$git_email"
 
-echo -ne "${BLUE_BG}  GitHub Token › ${RESET} "
-IFS= read -rs git_token < /dev/tty
-echo
+git_token=$(gum input --password --placeholder "GitHub token (Enter to skip)" --prompt "  Token › ")
 export OMARCHX_GIT_TOKEN="$git_token"
 
 # Restore username
 username="$_username"
 
-# Apply git config to root for now
+# Apply git config
 if [[ -n "$git_username" ]]; then
     git config --global user.name "$git_username"
 fi
@@ -221,7 +160,7 @@ if [[ -n "$git_token" && -n "$git_username" ]]; then
 fi
 
 echo ""
-echo "Setup complete for user: $username"
+gum style --foreground 2 "✓ Setup complete for user: $username"
 
 sleep 1.5
 
