@@ -15,7 +15,6 @@ ansi_art='
 
 clear
 echo -e "\n$ansi_art\n\nLet's install Omarchx!\n"
-echo "Running as: $(whoami) HOME=$HOME"
 sleep 1
 
 printf "Installing/updating git.\n"
