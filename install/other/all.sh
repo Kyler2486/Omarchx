@@ -1,10 +1,19 @@
-# set -eEo pipefail  # comment this out temporarily
-set -x  # print every command as it runs
+#!/bin/bash
 
-source "$OMARCHX_INSTALL/helpers/all.sh"
-source "$OMARCHX_INSTALL/preflight/all.sh"
-source "$OMARCHX_INSTALL/packaging/all.sh"
-source "$OMARCHX_INSTALL/config/all.sh"
-source "$OMARCHX_INSTALL/login/all.sh"
-source "$OMARCHX_INSTALL/post-install/all.sh"
-source "$OMARCHX_INSTALL/other/all.sh"
+set -e
+WORKDIR="/tmp/yay-build"
+
+rm -rf "$WORKDIR"
+git clone --quiet https://aur.archlinux.org/yay.git "$WORKDIR" >/dev/null 2>&1
+
+cd "$WORKDIR"
+
+# build + install
+makepkg -si --noconfirm --needed >/dev/null 2>&1
+sleep 10
+
+# Install mise
+curl https://mise.run | sh >/dev/null 2>&1
+echo 'eval "$(~/.local/bin/mise activate bash)"' >> ~/.bashrc
+export PATH="$HOME/.local/bin:$PATH"
+eval "$(~/.local/bin/mise activate bash)"
