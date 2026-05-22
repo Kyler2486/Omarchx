@@ -62,7 +62,7 @@ draw_menu() {
   local options=("$@")
   local selected=0
 
-  if [[ ! -e /dev/tty ]]; then
+  if ! (echo "" > /dev/tty) 2>/dev/null; then
     echo "${options[-1]}"
     return
   fi
