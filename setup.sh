@@ -20,13 +20,8 @@ sleep 2
 pkg="sudo"
 gum style --foreground 4 "Installing $pkg..."
 
-install_pkg() {
-  pacman -S --disable-sandbox --noconfirm --needed "$pkg" >/dev/null 2>&1
-}
-
-install_pkg &
-pid=$!
-gum spin --spinner dot --title "Installing $pkg..." -- wait "$pid"
+gum spin --spinner dot --title "Installing $pkg..." -- \
+  bash -c "pacman -S --disable-sandbox --noconfirm --needed '$pkg' >/dev/null 2>&1"
 status=$?
 
 if [ "$status" -eq 0 ]; then
