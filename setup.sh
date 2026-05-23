@@ -16,16 +16,23 @@ clear
 echo -e "$ansi_art"
 sleep 2
 
-# Install sudo
-pkg="sudo"
-gum style --foreground 4 "Installing $pkg..."
+# Sync package databases
+gum spin --spinner dot --spinner.foreground "#7aa2f7" --title "Syncing package databases..." -- \
+  bash -c "pacman -Sy --disable-sandbox --noconfirm >/dev/null 2>&1; echo \$? > /tmp/pacman_status"
 
-gum spin --spinner dot --title "Installing $pkg..." -- \
-  bash -c "pacman -S --disable-sandbox --noconfirm --needed '$pkg' >/dev/null 2>&1"
-status=$?
+# Install sudo
+gum spin --spinner dot --spinner.foreground "#7aa2f7" --title "Installing sudo..." -- \
+  bash -c "pacman -S --disable-sandbox --noconfirm --needed sudo >/dev/null 2>&1; echo \$? > /tmp/pacman_status"
+
+if [[ -f /tmp/pacman_status ]]; then
+  status=$(cat /tmp/pacman_status)
+  rm -f /tmp/pacman_status
+else
+  status=1
+fi
 
 if [ "$status" -eq 0 ]; then
-  gum style --foreground 2 "✓ Installed $pkg"
+  gum style --foreground 2 "✓ Installed sudo"
 else
   gum style --foreground 1 "✗ Install failed (exit $status)"
   exit 1
@@ -37,7 +44,11 @@ echo ""
 
 # Create user
 while true; do
-    username=$(gum input --placeholder "Username" --prompt "  Username › ")
+    username=$(gum input \
+      --placeholder "Username" \
+      --prompt "  Username › " \
+      --prompt.foreground "#7aa2f7" \
+      --cursor.foreground "#7aa2f7")
     username="$(echo "$username" | tr -d '[:cntrl:]' | xargs)"
 
     if [ -z "$username" ]; then
@@ -65,14 +76,24 @@ done
 
 # Setup password
 while true; do
-    pass1=$(gum input --password --placeholder "Password" --prompt "  Password › ")
+    pass1=$(gum input \
+      --password \
+      --placeholder "Password" \
+      --prompt "  Password › " \
+      --prompt.foreground "#7aa2f7" \
+      --cursor.foreground "#7aa2f7")
 
     if [ -z "$pass1" ]; then
         gum style --foreground 1 "Password cannot be empty."
         continue
     fi
 
-    pass2=$(gum input --password --placeholder "Confirm password" --prompt "  Confirm › ")
+    pass2=$(gum input \
+      --password \
+      --placeholder "Confirm password" \
+      --prompt "  Confirm › " \
+      --prompt.foreground "#7aa2f7" \
+      --cursor.foreground "#7aa2f7")
 
     if [ "$pass1" != "$pass2" ]; then
         gum style --foreground 1 "Passwords do not match."
@@ -93,6 +114,9 @@ echo ""
 
 sudo_choice=$(gum choose "No sudo" "Sudo user" "No passwd sudo" \
   --header "Select sudo access level:" \
+  --cursor.foreground "#7aa2f7" \
+  --selected.foreground "#c0caf5" \
+  --header.foreground "#565f89" \
   --height 6)
 
 SUDOERS_DIR="/etc/sudoers.d"
@@ -129,13 +153,26 @@ gum style --foreground 4 "Git configuration"
 gum style --foreground 8 "Used for git config (Enter to skip)"
 echo ""
 
-git_username=$(gum input --placeholder "GitHub username (Enter to skip)" --prompt "  Username › ")
+git_username=$(gum input \
+  --placeholder "GitHub username (Enter to skip)" \
+  --prompt "  Username › " \
+  --prompt.foreground "#7aa2f7" \
+  --cursor.foreground "#7aa2f7")
 export OMARCHX_USER_NAME="$git_username"
 
-git_email=$(gum input --placeholder "GitHub email (Enter to skip)" --prompt "  Email › ")
+git_email=$(gum input \
+  --placeholder "GitHub email (Enter to skip)" \
+  --prompt "  Email › " \
+  --prompt.foreground "#7aa2f7" \
+  --cursor.foreground "#7aa2f7")
 export OMARCHX_USER_EMAIL="$git_email"
 
-git_token=$(gum input --password --placeholder "GitHub token (Enter to skip)" --prompt "  Token › ")
+git_token=$(gum input \
+  --password \
+  --placeholder "GitHub token (Enter to skip)" \
+  --prompt "  Token › " \
+  --prompt.foreground "#7aa2f7" \
+  --cursor.foreground "#7aa2f7")
 export OMARCHX_GIT_TOKEN="$git_token"
 
 # Restore username
