@@ -1,7 +1,16 @@
-#!/usr/bin/bash
+#!/bin/bash
 
-ansi_art='
-    ▄█████▄    ▄███████████▄    ▄███████   ▄███████   ▄███████   ▄█   █▄    ▄█   █▄
+trap 'rm -f "$env_file"' EXIT
+
+if ! command -v gum &>/dev/null; then
+    echo "Error: gum is not installed."
+    echo "Install it from: https://github.com/charmbracelet/gum"
+    echo "  Arch: pacman -S gum"
+    echo "  Other: go install github.com/charmbracelet/gum@latest"
+    exit 1
+fi
+
+ansi_art='    ▄█████▄    ▄███████████▄    ▄███████   ▄███████   ▄███████   ▄█   █▄    ▄█   █▄
     ███   ███  ███   ███   ███  ███   ███  ███   ███  ███   ███  ███   ███  ███   ███
     ███   ███  ███   ███   ███  ███   ███  ███   ███  ███   █▀   ███   ███   ▀███▄██▀
     ███   ███  ███   ███   ███ ▄███▄▄▄███ ▄███▄▄▄██▀  ███       ▄███▄▄▄███▄   █████
@@ -9,12 +18,11 @@ ansi_art='
     ███   ███  ███   ███   ███  ███   ███ ██████████  ███   █▄   ███   ███  ███   ███
     ███   ███  ███   ███   ███  ███   ███  ███   ███  ███   ███  ███   ███  ███   ███
      ▀█████▀    ▀█   ███   █▀   ███   █▀   ███   █▀   ███████▀   ███   █▀   ▀█   █▀
-                                           ███   █▀
-'
-clear
+                                           ███   █▀'
 
-echo -e "$ansi_art"
-sleep 2
+clear
+gum style --foreground "#7aa2f7" "$ansi_art"
+sleep 1
 
 # Sync package databases
 gum spin --spinner dot --spinner.foreground "#7aa2f7" --title "Syncing package databases..." -- \
@@ -105,7 +113,7 @@ while true; do
     break
 done
 
-sleep 1.5
+sleep 1
 
 # Sudo setup
 echo ""
@@ -140,14 +148,14 @@ case "$sudo_choice" in
         ;;
 esac
 
-sleep 1.5
+sleep 1
 
-# Save username before git reads corrupt it
+# Save username before git config reads corrupt it
 _username="$username"
 
 # Git configuration
 clear
-echo -e "$ansi_art"
+gum style --foreground "#7aa2f7" "$ansi_art"
 echo ""
 gum style --foreground 4 "Git configuration"
 gum style --foreground 8 "Used for git config (Enter to skip)"
@@ -194,7 +202,7 @@ fi
 echo ""
 gum style --foreground 2 "✓ Setup complete for user: $username"
 
-sleep 1.5
+sleep 1
 
 # Pass env vars securely via temp file
 env_file=$(mktemp)
