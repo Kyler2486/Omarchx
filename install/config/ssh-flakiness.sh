@@ -1,2 +1,7 @@
 # Solve common flakiness with SSH
-echo "net.ipv4.tcp_mtu_probing=1" | sudo tee -a /etc/sysctl.d/99-sysctl.conf
+SYSCTL_CONF="/etc/sysctl.d/99-sysctl.conf"
+SETTING="net.ipv4.tcp_mtu_probing=1"
+
+if ! grep -qxF "$SETTING" "$SYSCTL_CONF" 2>/dev/null; then
+    echo "$SETTING" | sudo tee -a "$SYSCTL_CONF" >/dev/null
+fi
