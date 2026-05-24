@@ -2,15 +2,16 @@
 
 # Ensure Walker service is started automatically on boot
 mkdir -p ~/.config/autostart/
-cp $OMARCHX_PATH/default/walker/walker.desktop ~/.config/autostart/
+cp "$OMARCHX_PATH/default/walker/walker.desktop" ~/.config/autostart/ >/dev/null 2>&1
 
 # And is restarted if it crashes or is killed
 mkdir -p ~/.config/systemd/user/app-walker@autostart.service.d/
-cp $OMARCHX_PATH/default/walker/restart.conf ~/.config/systemd/user/app-walker@autostart.service.d/restart.conf
+cp "$OMARCHX_PATH/default/walker/restart.conf" \
+   ~/.config/systemd/user/app-walker@autostart.service.d/restart.conf >/dev/null 2>&1
 
 # Create pacman hook to restart walker after updates
 sudo mkdir -p /etc/pacman.d/hooks
-sudo tee /etc/pacman.d/hooks/walker-restart.hook > /dev/null << EOF
+sudo tee /etc/pacman.d/hooks/walker-restart.hook >/dev/null <<EOF
 [Trigger]
 Type = Package
 Operation = Upgrade
@@ -26,6 +27,9 @@ EOF
 
 # Link the visual theme menu config
 mkdir -p ~/.config/elephant/menus
-ln -snf $OMARCHX_PATH/default/elephant/omarchx_themes.lua ~/.config/elephant/menus/omarchx_themes.lua
-ln -snf $OMARCHX_PATH/default/elephant/omarchx_background_selector.lua ~/.config/elephant/menus/omarchx_background_selector.lua
-ln -snf $OMARCHX_PATH/default/elephant/omarchx_unlocks.lua ~/.config/elephant/menus/omarchx_unlocks.lua
+ln -snf "$OMARCHX_PATH/default/elephant/omarchx_themes.lua" \
+        ~/.config/elephant/menus/omarchx_themes.lua >/dev/null 2>&1
+ln -snf "$OMARCHX_PATH/default/elephant/omarchx_background_selector.lua" \
+        ~/.config/elephant/menus/omarchx_background_selector.lua >/dev/null 2>&1
+ln -snf "$OMARCHX_PATH/default/elephant/omarchx_unlocks.lua" \
+        ~/.config/elephant/menus/omarchx_unlocks.lua >/dev/null 2>&1
