@@ -17,3 +17,9 @@ curl https://mise.run | sh >/dev/null 2>&1
 echo 'eval "$(~/.local/bin/mise activate bash)"' >> ~/.bashrc
 export PATH="$HOME/.local/bin:$PATH"
 eval "$(~/.local/bin/mise activate bash)"
+
+# Verify mise is available before continuing
+if ! command -v mise &>/dev/null; then
+    echo "Error: mise failed to install or is not in PATH."
+    exit 1
+fi
