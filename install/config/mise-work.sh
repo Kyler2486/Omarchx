@@ -1,3 +1,20 @@
+#!/bin/bash
+
+# Ensure mise is installed and available before anything else
+if ! command -v mise &>/dev/null; then
+    REAL_HOME=$(getent passwd "${SUDO_USER:-$USER}" | cut -d: -f6)
+    MISE_BIN="$REAL_HOME/.local/bin"
+    mkdir -p "$MISE_BIN"
+    curl https://mise.run | MISE_INSTALL_PATH="$MISE_BIN/mise" sh >/dev/null 2>&1
+    export PATH="$MISE_BIN:$PATH"
+    eval "$($MISE_BIN/mise activate bash)"
+
+    if ! command -v mise &>/dev/null; then
+        echo "Error: mise failed to install."
+        exit 1
+    fi
+fi
+
 # Setup default work directory (and tries)
 mkdir -p "$HOME/Work"
 mkdir -p "$HOME/Work/tries"
